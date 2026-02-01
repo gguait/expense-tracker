@@ -4,10 +4,13 @@ import { auth } from './config/firebase';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import './styles/App.css';
+import { Toaster } from 'react-hot-toast';
+import ConfirmDialog from './components/ConfirmDialog';
 
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   useEffect(() => {
     // Escuchar cambios en el estado de autenticación
@@ -20,25 +23,22 @@ function App() {
   }, []);
 
   const handleLogout = async () => {
-    if (window.confirm('¿Seguro que quieres cerrar sesión?')) {
-      try {
-        await signOut(auth);
-      } catch (error) {
-        console.error('Error al cerrar sesión:', error);
-      }
+    setShowLogoutConfirm(true);
+  };
+
+  const confirmLogout = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
     }
   };
 
   if (loading) {
     return (
-      <div className="loading-screen" aria-busy="true" role="status">
-        <div className="loading-inner">
-          <svg className="loading-spinner" viewBox="0 0 50 50" aria-hidden="true">
-            <circle className="path" cx="25" cy="25" r="20" fill="none" strokeWidth="4" />
-          </svg>
-          <div className="loading-brand">Control de Gastos</div>
-          <p className="sr-only">Cargando…</p>
-        </div>
+      <div className="loading-screen">
+        <div className="loading-spinner">💰</div>
+        <p>Cargando...</p>
       </div>
     );
   }
@@ -49,6 +49,43 @@ function App() {
 
   return (
     <div className="app-wrapper">
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: '#363636',
+            color: '#fff',
+            borderRadius: '10px',
+            padding: '16px',
+          },
+          success: {
+            duration: 2000,
+            iconTheme: {
+              primary: '#1abc9c',
+              secondary: '#fff',
+            },
+          },
+          error: {
+            duration: 3000,
+            iconTheme: {
+              primary: '#e74c3c',
+              secondary: '#fff',
+            },
+          },
+        }}
+      />
+      <ConfirmDialog
+        isOpen={showLogoutConfirm}
+        onClose={() => setShowLogoutConfirm(false)}
+        onConfirm={confirmLogout}
+        title="Cerrar sesión"
+        message="¿Estás seguro de que quieres cerrar sesión?"
+        confirmText="Cerrar sesión"
+        cancelText="Cancelar"
+        type="warning"
+      />
       <div className="user-bar">
         <div className="user-info">
           <img 

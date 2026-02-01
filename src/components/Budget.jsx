@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { collection, query, onSnapshot, doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
+import toast from 'react-hot-toast';
 
 const Budget = ({ userId }) => {
   const [budget, setBudget] = useState(0);
@@ -63,7 +64,7 @@ const Budget = ({ userId }) => {
     const newBudget = parseFloat(tempBudget);
     
     if (isNaN(newBudget) || newBudget < 0) {
-      alert('Por favor introduce un presupuesto válido');
+      toast.error('Por favor introduce un presupuesto válido');
       return;
     }
 
@@ -76,9 +77,10 @@ const Budget = ({ userId }) => {
       setBudget(newBudget);
       setIsEditing(false);
       setTempBudget('');
+      toast.success('Presupuesto guardado correctamente');
     } catch (error) {
       console.error('Error al guardar presupuesto:', error);
-      alert('Error al guardar el presupuesto');
+      toast.error('Error al guardar el presupuesto');
     }
   };
 

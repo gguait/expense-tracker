@@ -3,6 +3,7 @@ import ExpenseForm from '../components/ExpenseForm';
 import ExpenseList from '../components/ExpenseList';
 import ExpenseStats from '../components/ExpenseStats';
 import Budget from '../components/Budget';
+import NotificationSettings from '../components/NotificationSettings';
 
 const Home = ({ userId }) => {
   const [editingExpense, setEditingExpense] = useState(null);
@@ -25,6 +26,9 @@ const Home = ({ userId }) => {
       </header>
 
       <main>
+        {/* Notificaciones */}
+        <NotificationSettings userId={userId} />
+
         {/* Presupuesto */}
         <div className="budget-section">
           <Budget userId={userId} />

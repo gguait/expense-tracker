@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { collection, query, orderBy, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { format } from 'date-fns';
+import ConfirmDialog from './ConfirmDialog';
 
 const ExpenseList = ({ userId, onEdit }) => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all'); // 'all', 'expenses', 'income', 'investments'
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, transactionId: null, type: null });
 
   useEffect(() => {
     if (!userId) return;
@@ -29,22 +31,25 @@ const ExpenseList = ({ userId, onEdit }) => {
   }, [userId]);
 
   const handleDelete = async (transactionId, type) => {
-    const confirmMessage = type === 'income' 
-      ? '¿Seguro que quieres eliminar este ingreso?' 
-      : type === 'investment'
-      ? '¿Seguro que quieres eliminar esta inversión?'
-      : '¿Seguro que quieres eliminar este gasto?';
-      
-    if (!window.confirm(confirmMessage)) {
-      return;
-    }
+    setConfirmDialog({ isOpen: true, transactionId, type });
+  };
 
+  const confirmDelete = async () => {
+    const { transactionId } = confirmDialog;
+    
     try {
       await deleteDoc(doc(db, 'users', userId, 'expenses', transactionId));
     } catch (error) {
       console.error('Error al eliminar:', error);
       alert('Error al eliminar');
     }
+  };
+
+  const getDeleteMessage = () => {
+    const { type } = confirmDialog;
+    if (type === 'income') return '¿Estás seguro de eliminar este ingreso?';
+    if (type === 'investment') return '¿Estás seguro de eliminar esta inversión?';
+    return '¿Estás seguro de eliminar este gasto?';
   };
 
   const formatDate = (timestamp) => {
@@ -115,6 +120,17 @@ const ExpenseList = ({ userId, onEdit }) => {
 
   return (
     <div className="expense-list">
+      <ConfirmDialog
+        isOpen={confirmDialog.isOpen}
+        onClose={() => setConfirmDialog({ isOpen: false, transactionId: null, type: null })}
+        onConfirm={confirmDelete}
+        title="Eliminar transacción"
+        message={getDeleteMessage()}
+        confirmText="Eliminar"
+        cancelText="Cancelar"
+        type="danger"
+      />
+      
       <h2>Mis Transacciones</h2>
       
       {/* Resumen de balance */}

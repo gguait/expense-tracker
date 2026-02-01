@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { collection, addDoc, updateDoc, doc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../config/firebase';
+import toast from 'react-hot-toast';
 
 const ExpenseForm = ({ userId, editingExpense, onCancelEdit }) => {
   const [amount, setAmount] = useState('');
@@ -62,7 +63,7 @@ const ExpenseForm = ({ userId, editingExpense, onCancelEdit }) => {
     e.preventDefault();
     
     if (!amount || !description) {
-      alert('Por favor completa todos los campos');
+      toast.error('Por favor completa todos los campos');
       return;
     }
 
@@ -78,7 +79,7 @@ const ExpenseForm = ({ userId, editingExpense, onCancelEdit }) => {
           type,
           updatedAt: serverTimestamp()
         });
-        alert(`${type === 'expense' ? 'Gasto' : type === 'income' ? 'Ingreso' : 'Inversión'} actualizado correctamente`);
+        toast.success(`${type === 'expense' ? 'Gasto' : type === 'income' ? 'Ingreso' : 'Inversión'} actualizado`);
         onCancelEdit();
       } else {
         // Crear nueva entrada
@@ -90,7 +91,7 @@ const ExpenseForm = ({ userId, editingExpense, onCancelEdit }) => {
           date: serverTimestamp(),
           createdAt: serverTimestamp()
         });
-        alert(`${type === 'expense' ? 'Gasto' : type === 'income' ? 'Ingreso' : 'Inversión'} añadido correctamente`);
+        toast.success(`${type === 'expense' ? 'Gasto' : type === 'income' ? 'Ingreso' : 'Inversión'} añadido`);
       }
 
       // Limpiar formulario
@@ -100,7 +101,7 @@ const ExpenseForm = ({ userId, editingExpense, onCancelEdit }) => {
       
     } catch (error) {
       console.error('Error al guardar:', error);
-      alert('Error al guardar');
+      toast.error('Error al guardar. Inténtalo de nuevo');
     } finally {
       setLoading(false);
     }

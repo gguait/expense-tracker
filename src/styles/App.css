@@ -1261,6 +1261,157 @@ header p {
   font-size: 1.1rem;
 }
 
+/* Notification Settings */
+.notification-settings {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.settings-header {
+  margin-bottom: 25px;
+}
+
+.settings-header h3 {
+  color: #667eea;
+  margin-bottom: 8px;
+  font-size: 1.3rem;
+}
+
+.settings-description {
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.setting-item:last-of-type {
+  border-bottom: none;
+}
+
+.setting-info {
+  flex: 1;
+}
+
+.setting-info label {
+  display: block;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.setting-hint {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(26px);
+}
+
+/* Time Input */
+.time-input {
+  padding: 10px 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #667eea;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.time-input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+/* Test Button */
+.btn-test-notification {
+  width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+  background: #f0f4ff;
+  color: #667eea;
+  border: 2px solid #667eea;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-test-notification:hover {
+  background: #667eea;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.notification-note {
+  margin-top: 20px;
+  padding: 15px;
+  background: #fff9e6;
+  border-left: 4px solid #f39c12;
+  border-radius: 8px;
+}
+
+.notification-note p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.6;
+}
+
 @media (max-width: 768px) {
   .stats-header {
     flex-direction: column;
