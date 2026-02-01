@@ -4,8 +4,7 @@ import ExpenseList from '../components/ExpenseList';
 import ExpenseStats from '../components/ExpenseStats';
 import Budget from '../components/Budget';
 
-const Home = () => {
-  const userId = 'demo-user';
+const Home = ({ userId }) => {
   const [editingExpense, setEditingExpense] = useState(null);
 
   const handleEdit = (expense) => {
