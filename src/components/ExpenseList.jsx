@@ -7,7 +7,7 @@ import { es } from 'date-fns/locale';
 const ExpenseList = ({ userId, onEdit }) => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all'); // 'all', 'expenses', 'income'
+  const [filter, setFilter] = useState('all'); // 'all', 'expenses', 'income', 'investments'
 
   useEffect(() => {
     if (!userId) return;
@@ -32,6 +32,8 @@ const ExpenseList = ({ userId, onEdit }) => {
   const handleDelete = async (transactionId, type) => {
     const confirmMessage = type === 'income' 
       ? '¿Seguro que quieres eliminar este ingreso?' 
+      : type === 'investment'
+      ? '¿Seguro que quieres eliminar esta inversión?'
       : '¿Seguro que quieres eliminar este gasto?';
       
     if (!window.confirm(confirmMessage)) {
@@ -63,6 +65,17 @@ const ExpenseList = ({ userId, onEdit }) => {
       return incomeEmojis[category] || '💵';
     }
     
+    if (type === 'investment') {
+      const investmentEmojis = {
+        acciones: '📊',
+        fondos: '💹',
+        criptomonedas: '₿',
+        inmuebles: '🏠',
+        otros: '📈'
+      };
+      return investmentEmojis[category] || '📈';
+    }
+    
     const expenseEmojis = {
       ocio: '🎮',
       comida: '🍔',
@@ -79,6 +92,7 @@ const ExpenseList = ({ userId, onEdit }) => {
     if (filter === 'all') return true;
     if (filter === 'expenses') return transactionType === 'expense';
     if (filter === 'income') return transactionType === 'income';
+    if (filter === 'investments') return transactionType === 'investment';
     return true;
   });
 
@@ -90,7 +104,11 @@ const ExpenseList = ({ userId, onEdit }) => {
     .filter(t => (t.type || 'expense') === 'expense')
     .reduce((sum, t) => sum + t.amount, 0);
     
-  const balance = totalIncome - totalExpenses;
+  const totalInvestments = transactions
+    .filter(t => (t.type || 'expense') === 'investment')
+    .reduce((sum, t) => sum + t.amount, 0);
+    
+  const balance = totalIncome - totalExpenses - totalInvestments;
 
   if (loading) {
     return <div>Cargando transacciones...</div>;
@@ -102,13 +120,17 @@ const ExpenseList = ({ userId, onEdit }) => {
       
       {/* Resumen de balance */}
       <div className="balance-summary">
-        <div className="balance-item income">
+        <div className="balance-item total income">
           <span className="label">Ingresos</span>
           <span className="value">+{totalIncome.toFixed(2)}€</span>
         </div>
-        <div className="balance-item expense">
+        <div className="balance-item total expense">
           <span className="label">Gastos</span>
           <span className="value">-{totalExpenses.toFixed(2)}€</span>
+        </div>
+        <div className="balance-item total investment">
+          <span className="label">Inversiones</span>
+          <span className="value">-{totalInvestments.toFixed(2)}€</span>
         </div>
         <div className={`balance-item total ${balance >= 0 ? 'positive' : 'negative'}`}>
           <span className="label">Balance</span>
@@ -136,11 +158,22 @@ const ExpenseList = ({ userId, onEdit }) => {
         >
           Ingresos
         </button>
+        <button 
+          className={filter === 'investments' ? 'active' : ''}
+          onClick={() => setFilter('investments')}
+        >
+          Inversiones
+        </button>
       </div>
 
       {filteredTransactions.length === 0 ? (
         <div className="no-expenses">
-          No tienes {filter === 'all' ? 'transacciones' : filter === 'expenses' ? 'gastos' : 'ingresos'} registrados
+          No tienes {
+            filter === 'all' ? 'transacciones' : 
+            filter === 'expenses' ? 'gastos' : 
+            filter === 'income' ? 'ingresos' :
+            'inversiones'
+          } registrados
         </div>
       ) : (
         <div className="expenses">

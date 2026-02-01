@@ -6,7 +6,7 @@ const ExpenseForm = ({ userId, editingExpense, onCancelEdit }) => {
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('ocio');
-  const [type, setType] = useState('expense'); // 'expense' o 'income'
+  const [type, setType] = useState('expense'); // 'expense', 'income' o 'investment'
   const [loading, setLoading] = useState(false);
 
   const expenseCategories = [
@@ -25,7 +25,19 @@ const ExpenseForm = ({ userId, editingExpense, onCancelEdit }) => {
     'otros'
   ];
 
-  const categories = type === 'expense' ? expenseCategories : incomeCategories;
+  const investmentCategories = [
+    'acciones',
+    'fondos',
+    'criptomonedas',
+    'inmuebles',
+    'otros'
+  ];
+
+  const categories = type === 'expense' 
+    ? expenseCategories 
+    : type === 'income' 
+    ? incomeCategories 
+    : investmentCategories;
 
   // Cargar datos cuando hay un gasto/ingreso para editar
   useEffect(() => {
@@ -40,7 +52,9 @@ const ExpenseForm = ({ userId, editingExpense, onCancelEdit }) => {
   // Cuando cambia el tipo, resetear la categoría
   useEffect(() => {
     if (!editingExpense) {
-      setCategory(type === 'expense' ? 'ocio' : 'salario');
+      if (type === 'expense') setCategory('ocio');
+      else if (type === 'income') setCategory('salario');
+      else if (type === 'investment') setCategory('acciones');
     }
   }, [type, editingExpense]);
 
@@ -64,7 +78,7 @@ const ExpenseForm = ({ userId, editingExpense, onCancelEdit }) => {
           type,
           updatedAt: serverTimestamp()
         });
-        alert(`${type === 'expense' ? 'Gasto' : 'Ingreso'} actualizado correctamente`);
+        alert(`${type === 'expense' ? 'Gasto' : type === 'income' ? 'Ingreso' : 'Inversión'} actualizado correctamente`);
         onCancelEdit();
       } else {
         // Crear nueva entrada
@@ -76,7 +90,7 @@ const ExpenseForm = ({ userId, editingExpense, onCancelEdit }) => {
           date: serverTimestamp(),
           createdAt: serverTimestamp()
         });
-        alert(`${type === 'expense' ? 'Gasto' : 'Ingreso'} añadido correctamente`);
+        alert(`${type === 'expense' ? 'Gasto' : type === 'income' ? 'Ingreso' : 'Inversión'} añadido correctamente`);
       }
 
       // Limpiar formulario
@@ -102,7 +116,10 @@ const ExpenseForm = ({ userId, editingExpense, onCancelEdit }) => {
 
   return (
     <form onSubmit={handleSubmit} className="expense-form">
-      <h2>{editingExpense ? 'Editar' : 'Añadir'} {type === 'expense' ? 'Gasto' : 'Ingreso'}</h2>
+      <h2>
+        {editingExpense ? 'Editar' : 'Añadir'}{' '}
+        {type === 'expense' ? 'Gasto' : type === 'income' ? 'Ingreso' : 'Inversión'}
+      </h2>
       
       {/* Selector de tipo */}
       <div className="type-selector">
@@ -119,6 +136,13 @@ const ExpenseForm = ({ userId, editingExpense, onCancelEdit }) => {
           onClick={() => setType('income')}
         >
           💰 Ingreso
+        </button>
+        <button
+          type="button"
+          className={`type-btn ${type === 'investment' ? 'active investment' : ''}`}
+          onClick={() => setType('investment')}
+        >
+          📈 Inversión
         </button>
       </div>
 
@@ -140,7 +164,13 @@ const ExpenseForm = ({ userId, editingExpense, onCancelEdit }) => {
           type="text"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          placeholder={type === 'expense' ? 'Ej: Cena con amigos' : 'Ej: Salario mensual'}
+          placeholder={
+            type === 'expense' 
+              ? 'Ej: Cena con amigos' 
+              : type === 'income'
+              ? 'Ej: Salario mensual'
+              : 'Ej: Compra de acciones'
+          }
           required
         />
       </div>
@@ -158,7 +188,12 @@ const ExpenseForm = ({ userId, editingExpense, onCancelEdit }) => {
 
       <div className="form-buttons">
         <button type="submit" disabled={loading} className="btn-primary">
-          {loading ? 'Guardando...' : editingExpense ? 'Actualizar' : `Añadir ${type === 'expense' ? 'Gasto' : 'Ingreso'}`}
+          {loading 
+            ? 'Guardando...' 
+            : editingExpense 
+            ? 'Actualizar' 
+            : `Añadir ${type === 'expense' ? 'Gasto' : type === 'income' ? 'Ingreso' : 'Inversión'}`
+          }
         </button>
         
         {editingExpense && (
