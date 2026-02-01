@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import ExpenseForm from '../components/ExpenseForm';
 import ExpenseList from '../components/ExpenseList';
+import ExpenseStats from '../components/ExpenseStats';
 
 const Home = () => {
   const userId = 'demo-user';
@@ -34,6 +35,10 @@ const Home = () => {
             userId={userId}
             onEdit={handleEdit}
           />
+        </div>
+
+        <div className="stats-section">
+          <ExpenseStats userId={userId} />
         </div>
       </main>
     </div>
