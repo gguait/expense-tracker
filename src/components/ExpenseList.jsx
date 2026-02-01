@@ -111,7 +111,14 @@ const ExpenseList = ({ userId, onEdit }) => {
   const balance = totalIncome - totalExpenses - totalInvestments;
 
   if (loading) {
-    return <div>Cargando transacciones...</div>;
+    return (
+      <div className="inline-loading" aria-busy="true" role="status">
+        <svg className="loading-spinner" viewBox="0 0 50 50" aria-hidden="true">
+          <circle className="path" cx="25" cy="25" r="20" fill="none" strokeWidth="4" />
+        </svg>
+        <div className="loading-brand">Cargando transacciones…</div>
+      </div>
+    );
   }
 
   return (

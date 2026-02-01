@@ -31,9 +31,14 @@ function App() {
 
   if (loading) {
     return (
-      <div className="loading-screen">
-        <div className="loading-spinner">💰</div>
-        <p>Cargando...</p>
+      <div className="loading-screen" aria-busy="true" role="status">
+        <div className="loading-inner">
+          <svg className="loading-spinner" viewBox="0 0 50 50" aria-hidden="true">
+            <circle className="path" cx="25" cy="25" r="20" fill="none" strokeWidth="4" />
+          </svg>
+          <div className="loading-brand">Control de Gastos</div>
+          <p className="sr-only">Cargando…</p>
+        </div>
       </div>
     );
   }
