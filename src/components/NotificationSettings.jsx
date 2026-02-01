@@ -8,6 +8,7 @@ const NotificationSettings = ({ userId }) => {
   const [time, setTime] = useState('20:00'); // Hora por defecto: 8 PM
   const [loading, setLoading] = useState(true);
   const [permission, setPermission] = useState('default');
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     loadSettings();
@@ -151,57 +152,67 @@ const NotificationSettings = ({ userId }) => {
 
   return (
     <div className="notification-settings">
-      <div className="settings-header">
-        <h3>🔔 Recordatorio diario</h3>
-        <p className="settings-description">
-          Recibe una notificación diaria para recordarte registrar tus gastos
-        </p>
-      </div>
-
-      <div className="setting-item">
-        <div className="setting-info">
-          <label htmlFor="notification-toggle">Activar recordatorio</label>
-          <span className="setting-hint">
-            {permission === 'denied' && '⚠️ Notificaciones bloqueadas'}
-            {permission === 'default' && 'Se te pedirá permiso al activar'}
-            {permission === 'granted' && enabled && '✓ Activo'}
-          </span>
+      <div 
+        className="settings-header collapsible" 
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <div className="header-content">
+          <h3>🔔 Recordatorio diario</h3>
+          <p className="settings-description">
+            {enabled ? `Activo - ${time}` : 'Recibe notificaciones diarias'}
+          </p>
         </div>
-        <label className="toggle-switch">
-          <input
-            id="notification-toggle"
-            type="checkbox"
-            checked={enabled}
-            onChange={handleToggle}
-          />
-          <span className="toggle-slider"></span>
-        </label>
+        <div className={`collapse-icon ${isOpen ? 'open' : ''}`}>
+          ▼
+        </div>
       </div>
 
-      {enabled && (
+      <div className={`settings-content ${isOpen ? 'open' : ''}`}>
         <div className="setting-item">
           <div className="setting-info">
-            <label htmlFor="notification-time">Hora del recordatorio</label>
-            <span className="setting-hint">Elige cuándo quieres recibir el recordatorio</span>
+            <label htmlFor="notification-toggle">Activar recordatorio</label>
+            <span className="setting-hint">
+              {permission === 'denied' && '⚠️ Notificaciones bloqueadas'}
+              {permission === 'default' && 'Se te pedirá permiso al activar'}
+              {permission === 'granted' && enabled && '✓ Activo'}
+            </span>
           </div>
-          <input
-            id="notification-time"
-            type="time"
-            value={time}
-            onChange={(e) => handleTimeChange(e.target.value)}
-            className="time-input"
-          />
+          <label className="toggle-switch">
+            <input
+              id="notification-toggle"
+              type="checkbox"
+              checked={enabled}
+              onChange={handleToggle}
+            />
+            <span className="toggle-slider"></span>
+          </label>
         </div>
-      )}
 
-      {enabled && permission === 'granted' && (
-        <button onClick={sendTestNotification} className="btn-test-notification">
-          Enviar notificación de prueba
-        </button>
-      )}
+        {enabled && (
+          <div className="setting-item">
+            <div className="setting-info">
+              <label htmlFor="notification-time">Hora del recordatorio</label>
+              <span className="setting-hint">Elige cuándo quieres recibir el recordatorio</span>
+            </div>
+            <input
+              id="notification-time"
+              type="time"
+              value={time}
+              onChange={(e) => handleTimeChange(e.target.value)}
+              className="time-input"
+            />
+          </div>
+        )}
 
-      <div className="notification-note">
-        <p>💡 <strong>Nota:</strong> Las notificaciones solo funcionan cuando la app está abierta en segundo plano o cuando la PWA está instalada.</p>
+        {enabled && permission === 'granted' && (
+          <button onClick={sendTestNotification} className="btn-test-notification">
+            Enviar notificación de prueba
+          </button>
+        )}
+
+        <div className="notification-note">
+          <p>💡 <strong>Nota:</strong> Las notificaciones solo funcionan cuando la app está abierta en segundo plano o cuando la PWA está instalada.</p>
+        </div>
       </div>
     </div>
   );
