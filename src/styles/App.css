@@ -239,20 +239,35 @@ header p {
   grid-template-columns: 1fr 1fr;
   gap: 30px;
   margin-top: 30px;
+  width: 100%;
+  max-width: 100%;
 }
 
 @media (max-width: 768px) {
+  * {
+    max-width: 100%;
+  }
+
   body {
     padding: 0;
+    width: 100vw;
   }
 
   .container {
-    padding: 15px;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  header {
+    padding: 20px 15px;
+    margin-bottom: 20px;
   }
 
   .grid {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 15px;
+    width: 100%;
   }
   
   .type-selector {
@@ -263,25 +278,26 @@ header p {
   .balance-summary {
     grid-template-columns: 1fr 1fr;
     gap: 8px;
+    width: 100%;
   }
 
   .balance-item {
-    padding: 15px 10px;
-    min-height: 80px;
+    padding: 12px 8px;
+    min-height: 75px;
   }
 
   .balance-item .label {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     margin-bottom: 6px;
   }
 
   .balance-item .value {
-    font-size: 1.1rem;
+    font-size: 0.95rem;
   }
   
   .budget-summary {
     grid-template-columns: 1fr;
-    gap: 15px;
+    gap: 12px;
   }
   
   .budget-item .value {
@@ -304,17 +320,26 @@ header p {
     width: 100%;
     justify-content: space-between;
   }
+
+  .transaction-filters {
+    flex-wrap: wrap;
+  }
+
+  .transaction-filters button {
+    font-size: 0.85rem;
+    padding: 6px 10px;
+  }
   
   .stat-value {
-    font-size: 2rem;
+    font-size: 1.8rem;
   }
 
   header h1 {
-    font-size: 2rem;
+    font-size: 1.8rem;
   }
 
   header p {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 
   .user-bar {
@@ -322,7 +347,12 @@ header p {
   }
 
   .user-name {
-    display: none;
+    font-size: 0.9rem;
+  }
+
+  .btn-logout {
+    font-size: 0.85rem;
+    padding: 6px 12px;
   }
 
   .category-breakdown {
@@ -330,16 +360,29 @@ header p {
   }
 
   .expense-item {
-    padding: 12px;
+    padding: 10px;
     font-size: 0.9rem;
   }
 
   .expense-icon {
     font-size: 1.5rem;
+    margin-right: 8px;
   }
 
   .expense-amount {
-    font-size: 1rem;
+    font-size: 0.95rem;
+  }
+
+  .expense-form,
+  .expense-list,
+  .expense-stats,
+  .budget-container {
+    padding: 20px 15px;
+  }
+
+  .expense-form input,
+  .expense-form select {
+    font-size: 16px;
   }
 }
 
