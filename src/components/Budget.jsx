@@ -38,13 +38,15 @@ const Budget = ({ userId }) => {
         ...doc.data()
       }));
       
-      // Filtrar solo gastos del mes actual
+      // Filtrar solo GASTOS (no ingresos) del mes actual
       const now = new Date();
       const monthExpenses = expensesData.filter(expense => {
         if (!expense.date) return false;
         const expenseDate = expense.date.toDate();
-        return expenseDate.getMonth() === now.getMonth() && 
-               expenseDate.getFullYear() === now.getFullYear();
+        const isCurrentMonth = expenseDate.getMonth() === now.getMonth() && 
+                              expenseDate.getFullYear() === now.getFullYear();
+        const isExpense = (expense.type || 'expense') === 'expense';
+        return isCurrentMonth && isExpense;
       });
 
       setExpenses(monthExpenses);

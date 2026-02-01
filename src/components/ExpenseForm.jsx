@@ -6,9 +6,10 @@ const ExpenseForm = ({ userId, editingExpense, onCancelEdit }) => {
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('ocio');
+  const [type, setType] = useState('expense'); // 'expense' o 'income'
   const [loading, setLoading] = useState(false);
 
-  const categories = [
+  const expenseCategories = [
     'ocio',
     'comida',
     'transporte',
@@ -17,14 +18,31 @@ const ExpenseForm = ({ userId, editingExpense, onCancelEdit }) => {
     'otros'
   ];
 
-  // Cargar datos cuando hay un gasto para editar
+  const incomeCategories = [
+    'salario',
+    'freelance',
+    'inversiones',
+    'otros'
+  ];
+
+  const categories = type === 'expense' ? expenseCategories : incomeCategories;
+
+  // Cargar datos cuando hay un gasto/ingreso para editar
   useEffect(() => {
     if (editingExpense) {
       setAmount(editingExpense.amount.toString());
       setDescription(editingExpense.description);
       setCategory(editingExpense.category);
+      setType(editingExpense.type || 'expense');
     }
   }, [editingExpense]);
+
+  // Cuando cambia el tipo, resetear la categoría
+  useEffect(() => {
+    if (!editingExpense) {
+      setCategory(type === 'expense' ? 'ocio' : 'salario');
+    }
+  }, [type, editingExpense]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,35 +56,37 @@ const ExpenseForm = ({ userId, editingExpense, onCancelEdit }) => {
 
     try {
       if (editingExpense) {
-        // Actualizar gasto existente
+        // Actualizar entrada existente
         await updateDoc(doc(db, 'users', userId, 'expenses', editingExpense.id), {
           amount: parseFloat(amount),
           description,
           category,
+          type,
           updatedAt: serverTimestamp()
         });
-        alert('Gasto actualizado correctamente');
+        alert(`${type === 'expense' ? 'Gasto' : 'Ingreso'} actualizado correctamente`);
         onCancelEdit();
       } else {
-        // Crear nuevo gasto
+        // Crear nueva entrada
         await addDoc(collection(db, 'users', userId, 'expenses'), {
           amount: parseFloat(amount),
           description,
           category,
+          type,
           date: serverTimestamp(),
           createdAt: serverTimestamp()
         });
-        alert('Gasto añadido correctamente');
+        alert(`${type === 'expense' ? 'Gasto' : 'Ingreso'} añadido correctamente`);
       }
 
       // Limpiar formulario
       setAmount('');
       setDescription('');
-      setCategory('ocio');
+      setCategory(type === 'expense' ? 'ocio' : 'salario');
       
     } catch (error) {
-      console.error('Error al guardar gasto:', error);
-      alert('Error al guardar el gasto');
+      console.error('Error al guardar:', error);
+      alert('Error al guardar');
     } finally {
       setLoading(false);
     }
@@ -76,13 +96,32 @@ const ExpenseForm = ({ userId, editingExpense, onCancelEdit }) => {
     setAmount('');
     setDescription('');
     setCategory('ocio');
+    setType('expense');
     onCancelEdit();
   };
 
   return (
     <form onSubmit={handleSubmit} className="expense-form">
-      <h2>{editingExpense ? 'Editar Gasto' : 'Añadir Gasto'}</h2>
+      <h2>{editingExpense ? 'Editar' : 'Añadir'} {type === 'expense' ? 'Gasto' : 'Ingreso'}</h2>
       
+      {/* Selector de tipo */}
+      <div className="type-selector">
+        <button
+          type="button"
+          className={`type-btn ${type === 'expense' ? 'active expense' : ''}`}
+          onClick={() => setType('expense')}
+        >
+          💸 Gasto
+        </button>
+        <button
+          type="button"
+          className={`type-btn ${type === 'income' ? 'active income' : ''}`}
+          onClick={() => setType('income')}
+        >
+          💰 Ingreso
+        </button>
+      </div>
+
       <div>
         <label>Cantidad (€)</label>
         <input
@@ -101,7 +140,7 @@ const ExpenseForm = ({ userId, editingExpense, onCancelEdit }) => {
           type="text"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          placeholder="Ej: Cena con amigos"
+          placeholder={type === 'expense' ? 'Ej: Cena con amigos' : 'Ej: Salario mensual'}
           required
         />
       </div>
@@ -119,7 +158,7 @@ const ExpenseForm = ({ userId, editingExpense, onCancelEdit }) => {
 
       <div className="form-buttons">
         <button type="submit" disabled={loading} className="btn-primary">
-          {loading ? 'Guardando...' : editingExpense ? 'Actualizar' : 'Añadir Gasto'}
+          {loading ? 'Guardando...' : editingExpense ? 'Actualizar' : `Añadir ${type === 'expense' ? 'Gasto' : 'Ingreso'}`}
         </button>
         
         {editingExpense && (

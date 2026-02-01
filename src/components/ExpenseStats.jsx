@@ -48,10 +48,15 @@ const ExpenseStats = ({ userId }) => {
   };
 
   const filterExpensesByTime = (expenses) => {
-    if (timeFilter === 'all') return expenses;
+    // Primero filtrar solo GASTOS (no ingresos)
+    const onlyExpenses = expenses.filter(expense => {
+      return (expense.type || 'expense') === 'expense';
+    });
+
+    if (timeFilter === 'all') return onlyExpenses;
 
     const now = new Date();
-    const filtered = expenses.filter(expense => {
+    const filtered = onlyExpenses.filter(expense => {
       if (!expense.date) return false;
       const expenseDate = expense.date.toDate();
       

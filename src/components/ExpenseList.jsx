@@ -5,8 +5,9 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 const ExpenseList = ({ userId, onEdit }) => {
-  const [expenses, setExpenses] = useState([]);
+  const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('all'); // 'all', 'expenses', 'income'
 
   useEffect(() => {
     if (!userId) return;
@@ -17,27 +18,31 @@ const ExpenseList = ({ userId, onEdit }) => {
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const expensesData = snapshot.docs.map(doc => ({
+      const transactionsData = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
-      setExpenses(expensesData);
+      setTransactions(transactionsData);
       setLoading(false);
     });
 
     return () => unsubscribe();
   }, [userId]);
 
-  const handleDelete = async (expenseId) => {
-    if (!window.confirm('¿Seguro que quieres eliminar este gasto?')) {
+  const handleDelete = async (transactionId, type) => {
+    const confirmMessage = type === 'income' 
+      ? '¿Seguro que quieres eliminar este ingreso?' 
+      : '¿Seguro que quieres eliminar este gasto?';
+      
+    if (!window.confirm(confirmMessage)) {
       return;
     }
 
     try {
-      await deleteDoc(doc(db, 'users', userId, 'expenses', expenseId));
+      await deleteDoc(doc(db, 'users', userId, 'expenses', transactionId));
     } catch (error) {
-      console.error('Error al eliminar gasto:', error);
-      alert('Error al eliminar el gasto');
+      console.error('Error al eliminar:', error);
+      alert('Error al eliminar');
     }
   };
 
@@ -47,8 +52,18 @@ const ExpenseList = ({ userId, onEdit }) => {
     return format(date, "d 'de' MMMM, yyyy", { locale: es });
   };
 
-  const getCategoryEmoji = (category) => {
-    const emojis = {
+  const getCategoryEmoji = (category, type) => {
+    if (type === 'income') {
+      const incomeEmojis = {
+        salario: '💼',
+        freelance: '💻',
+        inversiones: '📈',
+        otros: '💵'
+      };
+      return incomeEmojis[category] || '💵';
+    }
+    
+    const expenseEmojis = {
       ocio: '🎮',
       comida: '🍔',
       transporte: '🚗',
@@ -56,58 +71,117 @@ const ExpenseList = ({ userId, onEdit }) => {
       servicios: '💡',
       otros: '📦'
     };
-    return emojis[category] || '📦';
+    return expenseEmojis[category] || '📦';
   };
 
+  const filteredTransactions = transactions.filter(transaction => {
+    const transactionType = transaction.type || 'expense';
+    if (filter === 'all') return true;
+    if (filter === 'expenses') return transactionType === 'expense';
+    if (filter === 'income') return transactionType === 'income';
+    return true;
+  });
+
+  const totalIncome = transactions
+    .filter(t => (t.type || 'expense') === 'income')
+    .reduce((sum, t) => sum + t.amount, 0);
+    
+  const totalExpenses = transactions
+    .filter(t => (t.type || 'expense') === 'expense')
+    .reduce((sum, t) => sum + t.amount, 0);
+    
+  const balance = totalIncome - totalExpenses;
+
   if (loading) {
-    return <div>Cargando gastos...</div>;
+    return <div>Cargando transacciones...</div>;
   }
-
-  if (expenses.length === 0) {
-    return <div className="no-expenses">No tienes gastos registrados aún</div>;
-  }
-
-  const totalGastos = expenses.reduce((sum, expense) => sum + expense.amount, 0);
 
   return (
     <div className="expense-list">
-      <h2>Mis Gastos</h2>
-      <div className="total">
-        <strong>Total gastado:</strong> {totalGastos.toFixed(2)}€
-      </div>
+      <h2>Mis Transacciones</h2>
       
-      <div className="expenses">
-        {expenses.map(expense => (
-          <div key={expense.id} className="expense-item">
-            <div className="expense-icon">
-              {getCategoryEmoji(expense.category)}
-            </div>
-            <div className="expense-details">
-              <div className="expense-description">{expense.description}</div>
-              <div className="expense-date">{formatDate(expense.date)}</div>
-            </div>
-            <div className="expense-amount">
-              {expense.amount.toFixed(2)}€
-            </div>
-            <div className="expense-actions">
-              <button 
-                className="btn-edit"
-                onClick={() => onEdit(expense)}
-                title="Editar"
-              >
-                ✏️
-              </button>
-              <button 
-                className="btn-delete"
-                onClick={() => handleDelete(expense.id)}
-                title="Eliminar"
-              >
-                🗑️
-              </button>
-            </div>
-          </div>
-        ))}
+      {/* Resumen de balance */}
+      <div className="balance-summary">
+        <div className="balance-item income">
+          <span className="label">Ingresos</span>
+          <span className="value">+{totalIncome.toFixed(2)}€</span>
+        </div>
+        <div className="balance-item expense">
+          <span className="label">Gastos</span>
+          <span className="value">-{totalExpenses.toFixed(2)}€</span>
+        </div>
+        <div className={`balance-item total ${balance >= 0 ? 'positive' : 'negative'}`}>
+          <span className="label">Balance</span>
+          <span className="value">{balance.toFixed(2)}€</span>
+        </div>
       </div>
+
+      {/* Filtros */}
+      <div className="transaction-filters">
+        <button 
+          className={filter === 'all' ? 'active' : ''}
+          onClick={() => setFilter('all')}
+        >
+          Todas
+        </button>
+        <button 
+          className={filter === 'expenses' ? 'active' : ''}
+          onClick={() => setFilter('expenses')}
+        >
+          Gastos
+        </button>
+        <button 
+          className={filter === 'income' ? 'active' : ''}
+          onClick={() => setFilter('income')}
+        >
+          Ingresos
+        </button>
+      </div>
+
+      {filteredTransactions.length === 0 ? (
+        <div className="no-expenses">
+          No tienes {filter === 'all' ? 'transacciones' : filter === 'expenses' ? 'gastos' : 'ingresos'} registrados
+        </div>
+      ) : (
+        <div className="expenses">
+          {filteredTransactions.map(transaction => {
+            const transactionType = transaction.type || 'expense';
+            return (
+              <div 
+                key={transaction.id} 
+                className={`expense-item ${transactionType}`}
+              >
+                <div className="expense-icon">
+                  {getCategoryEmoji(transaction.category, transactionType)}
+                </div>
+                <div className="expense-details">
+                  <div className="expense-description">{transaction.description}</div>
+                  <div className="expense-date">{formatDate(transaction.date)}</div>
+                </div>
+                <div className={`expense-amount ${transactionType}`}>
+                  {transactionType === 'income' ? '+' : '-'}{transaction.amount.toFixed(2)}€
+                </div>
+                <div className="expense-actions">
+                  <button 
+                    className="btn-edit"
+                    onClick={() => onEdit(transaction)}
+                    title="Editar"
+                  >
+                    ✏️
+                  </button>
+                  <button 
+                    className="btn-delete"
+                    onClick={() => handleDelete(transaction.id, transactionType)}
+                    title="Eliminar"
+                  >
+                    🗑️
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
