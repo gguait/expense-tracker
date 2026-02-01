@@ -2,6 +2,7 @@ import { useState } from 'react';
 import ExpenseForm from '../components/ExpenseForm';
 import ExpenseList from '../components/ExpenseList';
 import ExpenseStats from '../components/ExpenseStats';
+import Budget from '../components/Budget';
 
 const Home = () => {
   const userId = 'demo-user';
@@ -25,6 +26,12 @@ const Home = () => {
       </header>
 
       <main>
+        {/* Presupuesto */}
+        <div className="budget-section">
+          <Budget userId={userId} />
+        </div>
+
+        {/* Formulario y Lista */}
         <div className="grid">
           <ExpenseForm 
             userId={userId} 
@@ -37,6 +44,7 @@ const Home = () => {
           />
         </div>
 
+        {/* Estadísticas */}
         <div className="stats-section">
           <ExpenseStats userId={userId} />
         </div>
