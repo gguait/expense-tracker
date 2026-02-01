@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { collection, query, orderBy, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
 
 const ExpenseList = ({ userId, onEdit }) => {
   const [transactions, setTransactions] = useState([]);
@@ -51,7 +50,7 @@ const ExpenseList = ({ userId, onEdit }) => {
   const formatDate = (timestamp) => {
     if (!timestamp) return 'Fecha no disponible';
     const date = timestamp.toDate();
-    return format(date, "d 'de' MMMM, yyyy", { locale: es });
+    return format(date, 'dd/MM/yyyy');
   };
 
   const getCategoryEmoji = (category, type) => {
@@ -111,14 +110,7 @@ const ExpenseList = ({ userId, onEdit }) => {
   const balance = totalIncome - totalExpenses - totalInvestments;
 
   if (loading) {
-    return (
-      <div className="inline-loading" aria-busy="true" role="status">
-        <svg className="loading-spinner" viewBox="0 0 50 50" aria-hidden="true">
-          <circle className="path" cx="25" cy="25" r="20" fill="none" strokeWidth="4" />
-        </svg>
-        <div className="loading-brand">Cargando transacciones…</div>
-      </div>
-    );
+    return <div>Cargando transacciones...</div>;
   }
 
   return (
@@ -127,15 +119,15 @@ const ExpenseList = ({ userId, onEdit }) => {
       
       {/* Resumen de balance */}
       <div className="balance-summary">
-        <div className="balance-item total income">
+        <div className="balance-item income">
           <span className="label">Ingresos</span>
           <span className="value">+{totalIncome.toFixed(2)}€</span>
         </div>
-        <div className="balance-item total expense">
+        <div className="balance-item expense">
           <span className="label">Gastos</span>
           <span className="value">-{totalExpenses.toFixed(2)}€</span>
         </div>
-        <div className="balance-item total investment">
+        <div className="balance-item investment">
           <span className="label">Inversiones</span>
           <span className="value">-{totalInvestments.toFixed(2)}€</span>
         </div>

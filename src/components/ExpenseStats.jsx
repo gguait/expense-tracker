@@ -137,29 +137,31 @@ const ExpenseStats = ({ userId }) => {
 
       {chartData.length > 0 ? (
         <>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis 
-                dataKey="category" 
-                tick={{ fontSize: 12 }}
-              />
-              <YAxis tick={{ fontSize: 12 }} />
-              <Tooltip 
-                formatter={(value) => `${value}€`}
-                contentStyle={{ 
-                  backgroundColor: 'white', 
-                  border: '1px solid #ccc',
-                  borderRadius: '8px'
-                }}
-              />
-              <Bar dataKey="amount" radius={[8, 8, 0, 0]}>
-                {chartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={getCategoryColor(entry.categoryKey)} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+          <div className="chart-container">
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={chartData} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis 
+                  dataKey="category" 
+                  tick={{ fontSize: 12 }}
+                />
+                <YAxis tick={{ fontSize: 10 }} width={40} />
+                <Tooltip 
+                  formatter={(value) => `${value}€`}
+                  contentStyle={{ 
+                    backgroundColor: 'white', 
+                    border: '1px solid #ccc',
+                    borderRadius: '8px'
+                  }}
+                />
+                <Bar dataKey="amount" radius={[8, 8, 0, 0]}>
+                  {chartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={getCategoryColor(entry.categoryKey)} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
 
           <div className="category-breakdown">
             {chartData.map(item => (
