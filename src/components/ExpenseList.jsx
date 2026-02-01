@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-const ExpenseList = ({ userId }) => {
+const ExpenseList = ({ userId, onEdit }) => {
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -27,6 +27,19 @@ const ExpenseList = ({ userId }) => {
 
     return () => unsubscribe();
   }, [userId]);
+
+  const handleDelete = async (expenseId) => {
+    if (!window.confirm('¿Seguro que quieres eliminar este gasto?')) {
+      return;
+    }
+
+    try {
+      await deleteDoc(doc(db, 'users', userId, 'expenses', expenseId));
+    } catch (error) {
+      console.error('Error al eliminar gasto:', error);
+      alert('Error al eliminar el gasto');
+    }
+  };
 
   const formatDate = (timestamp) => {
     if (!timestamp) return 'Fecha no disponible';
@@ -75,6 +88,22 @@ const ExpenseList = ({ userId }) => {
             </div>
             <div className="expense-amount">
               {expense.amount.toFixed(2)}€
+            </div>
+            <div className="expense-actions">
+              <button 
+                className="btn-edit"
+                onClick={() => onEdit(expense)}
+                title="Editar"
+              >
+                ✏️
+              </button>
+              <button 
+                className="btn-delete"
+                onClick={() => handleDelete(expense.id)}
+                title="Eliminar"
+              >
+                🗑️
+              </button>
             </div>
           </div>
         ))}
