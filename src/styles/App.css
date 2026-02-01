@@ -316,8 +316,10 @@ header p {
   }
 
   .type-btn {
-    padding: 10px;
-    font-size: 14px;
+    padding: 12px;
+    font-size: 15px;
+    width: 100%;
+    box-sizing: border-box;
   }
   
   /* Balance en columna única para que todo quepa */
@@ -344,8 +346,15 @@ header p {
   }
   
   .budget-summary {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
     gap: 10px;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .budget-item {
+    width: 100%;
+    box-sizing: border-box;
   }
   
   .budget-item .value {
@@ -476,6 +485,7 @@ header p {
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
+    overflow-x: hidden;
   }
 
   .expense-form h2,
@@ -486,9 +496,13 @@ header p {
   }
 
   .expense-form input,
-  .expense-form select {
+  .expense-form select,
+  .expense-form button {
     font-size: 16px;
     padding: 10px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .expense-form label {
@@ -521,20 +535,6 @@ header p {
   .login-features {
     grid-template-columns: 1fr;
     gap: 15px;
-  }
-
-  /* Increase touch target sizes for mobile */
-  .btn-google-login,
-  .btn-primary,
-  .btn-secondary {
-    padding: 14px 16px;
-    font-size: 16px;
-    border-radius: 10px;
-  }
-
-  /* Make interactive lists easier to scroll/tap */
-  .transaction-filters {
-    -webkit-overflow-scrolling: touch;
   }
 }
 
