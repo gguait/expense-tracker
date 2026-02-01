@@ -113,6 +113,32 @@ header p {
   cursor: not-allowed;
 }
 
+.form-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-primary {
+  flex: 1;
+}
+
+.btn-secondary {
+  flex: 1;
+  background: #6c757d !important;
+  padding: 14px;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.btn-secondary:hover {
+  transform: translateY(-2px);
+}
+
 .expense-list {
   background: white;
   padding: 30px;
@@ -147,11 +173,12 @@ header p {
   background: #fafafa;
   border-radius: 8px;
   border-left: 4px solid #667eea;
+  gap: 10px;
 }
 
 .expense-icon {
   font-size: 2rem;
-  margin-right: 15px;
+  margin-right: 5px;
 }
 
 .expense-details {
@@ -172,6 +199,31 @@ header p {
   font-size: 1.2rem;
   font-weight: 700;
   color: #667eea;
+  margin-right: 10px;
+}
+
+.expense-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-edit,
+.btn-delete {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.btn-edit:hover {
+  background-color: #e3f2fd;
+}
+
+.btn-delete:hover {
+  background-color: #ffebee;
 }
 
 .no-expenses {

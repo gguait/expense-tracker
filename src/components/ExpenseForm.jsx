@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { useState, useEffect } from 'react';
+import { collection, addDoc, updateDoc, doc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
-const ExpenseForm = ({ userId }) => {
+const ExpenseForm = ({ userId, editingExpense, onCancelEdit }) => {
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('ocio');
@@ -17,6 +17,15 @@ const ExpenseForm = ({ userId }) => {
     'otros'
   ];
 
+  // Cargar datos cuando hay un gasto para editar
+  useEffect(() => {
+    if (editingExpense) {
+      setAmount(editingExpense.amount.toString());
+      setDescription(editingExpense.description);
+      setCategory(editingExpense.category);
+    }
+  }, [editingExpense]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -28,31 +37,51 @@ const ExpenseForm = ({ userId }) => {
     setLoading(true);
 
     try {
-      await addDoc(collection(db, 'users', userId, 'expenses'), {
-        amount: parseFloat(amount),
-        description,
-        category,
-        date: serverTimestamp(),
-        createdAt: serverTimestamp()
-      });
+      if (editingExpense) {
+        // Actualizar gasto existente
+        await updateDoc(doc(db, 'users', userId, 'expenses', editingExpense.id), {
+          amount: parseFloat(amount),
+          description,
+          category,
+          updatedAt: serverTimestamp()
+        });
+        alert('Gasto actualizado correctamente');
+        onCancelEdit();
+      } else {
+        // Crear nuevo gasto
+        await addDoc(collection(db, 'users', userId, 'expenses'), {
+          amount: parseFloat(amount),
+          description,
+          category,
+          date: serverTimestamp(),
+          createdAt: serverTimestamp()
+        });
+        alert('Gasto añadido correctamente');
+      }
 
       // Limpiar formulario
       setAmount('');
       setDescription('');
       setCategory('ocio');
       
-      alert('Gasto añadido correctamente');
     } catch (error) {
-      console.error('Error al añadir gasto:', error);
-      alert('Error al añadir el gasto');
+      console.error('Error al guardar gasto:', error);
+      alert('Error al guardar el gasto');
     } finally {
       setLoading(false);
     }
   };
 
+  const handleCancel = () => {
+    setAmount('');
+    setDescription('');
+    setCategory('ocio');
+    onCancelEdit();
+  };
+
   return (
     <form onSubmit={handleSubmit} className="expense-form">
-      <h2>Añadir Gasto</h2>
+      <h2>{editingExpense ? 'Editar Gasto' : 'Añadir Gasto'}</h2>
       
       <div>
         <label>Cantidad (€)</label>
@@ -88,9 +117,17 @@ const ExpenseForm = ({ userId }) => {
         </select>
       </div>
 
-      <button type="submit" disabled={loading}>
-        {loading ? 'Guardando...' : 'Añadir Gasto'}
-      </button>
+      <div className="form-buttons">
+        <button type="submit" disabled={loading} className="btn-primary">
+          {loading ? 'Guardando...' : editingExpense ? 'Actualizar' : 'Añadir Gasto'}
+        </button>
+        
+        {editingExpense && (
+          <button type="button" onClick={handleCancel} className="btn-secondary">
+            Cancelar
+          </button>
+        )}
+      </div>
     </form>
   );
 };

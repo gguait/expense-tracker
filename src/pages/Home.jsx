@@ -3,9 +3,18 @@ import ExpenseForm from '../components/ExpenseForm';
 import ExpenseList from '../components/ExpenseList';
 
 const Home = () => {
-  // Por ahora usamos un ID de usuario hardcodeado
-  // Más adelante implementaremos autenticación real
   const userId = 'demo-user';
+  const [editingExpense, setEditingExpense] = useState(null);
+
+  const handleEdit = (expense) => {
+    setEditingExpense(expense);
+    // Scroll al formulario
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingExpense(null);
+  };
 
   return (
     <div className="container">
@@ -16,8 +25,15 @@ const Home = () => {
 
       <main>
         <div className="grid">
-          <ExpenseForm userId={userId} />
-          <ExpenseList userId={userId} />
+          <ExpenseForm 
+            userId={userId} 
+            editingExpense={editingExpense}
+            onCancelEdit={handleCancelEdit}
+          />
+          <ExpenseList 
+            userId={userId}
+            onEdit={handleEdit}
+          />
         </div>
       </main>
     </div>
