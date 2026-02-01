@@ -311,8 +311,10 @@ header p {
   }
   
   .type-selector {
-    grid-template-columns: 1fr;
-    gap: 6px;
+    grid-template-columns: 1fr !important;
+    gap: 8px;
+    width: 100%;
+    max-width: 100%;
   }
 
   .type-btn {
