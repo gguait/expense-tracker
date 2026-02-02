@@ -1178,6 +1178,48 @@ header p {
   color: white;
 }
 
+/* Type Filter for Stats */
+.type-filter-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.type-filter-btn {
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  background: white;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: #666;
+}
+
+.type-filter-btn:hover {
+  border-color: #667eea;
+  transform: translateY(-2px);
+}
+
+.type-filter-btn.active {
+  color: white;
+  border-color: transparent;
+}
+
+.type-filter-btn.active.expenses {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+}
+
+.type-filter-btn.active.income {
+  background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+}
+
+.type-filter-btn.active.investments {
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+}
+
 .total-stat {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
@@ -1500,6 +1542,16 @@ input:checked + .toggle-slider:before {
   .time-filter {
     width: 100%;
     justify-content: space-between;
+  }
+
+  .type-filter-stats {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .type-filter-btn {
+    padding: 10px;
+    font-size: 14px;
   }
   
   .stat-value {

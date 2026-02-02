@@ -6,6 +6,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 const ExpenseStats = ({ userId }) => {
   const [expenses, setExpenses] = useState([]);
   const [timeFilter, setTimeFilter] = useState('all'); // all, month, week
+  const [typeFilter, setTypeFilter] = useState('expenses'); // expenses, income, investments
 
   useEffect(() => {
     if (!userId) return;
@@ -48,15 +49,20 @@ const ExpenseStats = ({ userId }) => {
   };
 
   const filterExpensesByTime = (expenses) => {
-    // Primero filtrar solo GASTOS (no ingresos)
-    const onlyExpenses = expenses.filter(expense => {
-      return (expense.type || 'expense') === 'expense';
+    // Primero filtrar por TIPO (gastos, ingresos o inversiones)
+    let filtered = expenses.filter(expense => {
+      const expenseType = expense.type || 'expense';
+      if (typeFilter === 'expenses') return expenseType === 'expense';
+      if (typeFilter === 'income') return expenseType === 'income';
+      if (typeFilter === 'investments') return expenseType === 'investment';
+      return true;
     });
 
-    if (timeFilter === 'all') return onlyExpenses;
+    // Luego filtrar por TIEMPO
+    if (timeFilter === 'all') return filtered;
 
     const now = new Date();
-    const filtered = onlyExpenses.filter(expense => {
+    filtered = filtered.filter(expense => {
       if (!expense.date) return false;
       const expenseDate = expense.date.toDate();
       
@@ -104,10 +110,24 @@ const ExpenseStats = ({ userId }) => {
     return 'total';
   };
 
+  const getTypeLabel = () => {
+    if (typeFilter === 'expenses') return 'Gastos';
+    if (typeFilter === 'income') return 'Ingresos';
+    if (typeFilter === 'investments') return 'Inversiones';
+    return 'Transacciones';
+  };
+
+  const getTypeEmoji = () => {
+    if (typeFilter === 'expenses') return '💸';
+    if (typeFilter === 'income') return '💰';
+    if (typeFilter === 'investments') return '📈';
+    return '📊';
+  };
+
   return (
     <div className="expense-stats">
       <div className="stats-header">
-        <h2>📊 Estadísticas</h2>
+        <h2>{getTypeEmoji()} Estadísticas</h2>
         <div className="time-filter">
           <button 
             className={timeFilter === 'all' ? 'active' : ''}
@@ -130,8 +150,30 @@ const ExpenseStats = ({ userId }) => {
         </div>
       </div>
 
+      {/* Type Filter */}
+      <div className="type-filter-stats">
+        <button 
+          className={`type-filter-btn ${typeFilter === 'expenses' ? 'active expenses' : ''}`}
+          onClick={() => setTypeFilter('expenses')}
+        >
+          💸 Gastos
+        </button>
+        <button 
+          className={`type-filter-btn ${typeFilter === 'income' ? 'active income' : ''}`}
+          onClick={() => setTypeFilter('income')}
+        >
+          💰 Ingresos
+        </button>
+        <button 
+          className={`type-filter-btn ${typeFilter === 'investments' ? 'active investments' : ''}`}
+          onClick={() => setTypeFilter('investments')}
+        >
+          📈 Inversiones
+        </button>
+      </div>
+
       <div className="total-stat">
-        <div className="stat-label">Gasto {getTimeFilterLabel()}</div>
+        <div className="stat-label">{getTypeLabel()} {getTimeFilterLabel()}</div>
         <div className="stat-value">{totalAmount.toFixed(2)}€</div>
       </div>
 
