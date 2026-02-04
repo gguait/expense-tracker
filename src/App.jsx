@@ -4,13 +4,16 @@ import { auth } from './config/firebase';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import './styles/App.css';
+import './styles/theme.css';
 import { Toaster } from 'react-hot-toast';
 import ConfirmDialog from './components/ConfirmDialog';
+import { useTheme } from './hooks/useTheme';
 
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     // Escuchar cambios en el estado de autenticación
@@ -95,9 +98,14 @@ function App() {
           />
           <span className="user-name">{user.displayName}</span>
         </div>
-        <button onClick={handleLogout} className="btn-logout">
-          Cerrar sesión
-        </button>
+        <div className="user-actions">
+          <button onClick={toggleTheme} className="btn-theme" title={`Cambiar a modo ${theme === 'light' ? 'oscuro' : 'claro'}`}>
+            {theme === 'light' ? '🌙' : '☀️'}
+          </button>
+          <button onClick={handleLogout} className="btn-logout">
+            Cerrar sesión
+          </button>
+        </div>
       </div>
       <Home userId={user.uid} />
     </div>

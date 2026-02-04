@@ -1,0 +1,332 @@
+/* Theme Variables */
+:root[data-theme="light"] {
+  --bg-primary: #f5f5f5;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #fafafa;
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --text-tertiary: #888888;
+  --border-color: #e0e0e0;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --input-bg: #ffffff;
+  --card-bg: #ffffff;
+}
+
+:root[data-theme="dark"] {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --bg-tertiary: #3a3a3a;
+  --text-primary: #f0f0f0;
+  --text-secondary: #c0c0c0;
+  --text-tertiary: #999999;
+  --border-color: #404040;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --input-bg: #2d2d2d;
+  --card-bg: #2d2d2d;
+}
+
+/* Apply theme colors */
+body {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Cards */
+.expense-form,
+.expense-list,
+.expense-stats,
+.budget-container,
+.notification-settings {
+  background: var(--card-bg) !important;
+  box-shadow: var(--shadow) !important;
+  color: var(--text-primary) !important;
+}
+
+.expense-item {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+.balance-item {
+  color: var(--text-primary) !important;
+}
+
+.category-item {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary) !important;
+}
+
+h2:not(header h2) {
+  color: #8b9df8 !important;
+}
+
+:root[data-theme="light"] h2:not(header h2) {
+  color: #667eea !important;
+}
+
+/* Budget header in dark mode */
+:root[data-theme="dark"] .budget-header h2,
+:root[data-theme="dark"] .stats-header h2,
+:root[data-theme="dark"] .settings-header h3 {
+  color: #8b9df8 !important;
+}
+
+/* Text */
+.expense-description,
+.category-name,
+.setting-info label,
+.budget-item .label {
+  color: var(--text-primary) !important;
+}
+
+/* Labels in dark mode - better contrast */
+:root[data-theme="dark"] .budget-item .label {
+  color: #b0b0b0 !important;
+}
+
+.expense-date,
+.setting-hint,
+.category-percentage {
+  color: var(--text-tertiary) !important;
+}
+
+/* Improve percentage visibility in dark mode */
+:root[data-theme="dark"] .category-percentage {
+  color: #999999 !important;
+}
+
+/* Budget values - ensure high contrast */
+:root[data-theme="dark"] .budget-item .value {
+  color: #ffffff !important;
+}
+
+:root[data-theme="dark"] .stat-value {
+  color: #ffffff !important;
+}
+
+/* Inputs */
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+  background: var(--input-bg) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+:root[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]),
+:root[data-theme="dark"] select,
+:root[data-theme="dark"] textarea {
+  border-color: #505050 !important;
+}
+
+input::placeholder {
+  color: var(--text-tertiary) !important;
+}
+
+:root[data-theme="dark"] input::placeholder {
+  color: #888888 !important;
+}
+
+/* User bar */
+.user-bar {
+  background: var(--card-bg) !important;
+  box-shadow: var(--shadow) !important;
+}
+
+.user-name {
+  color: var(--text-primary) !important;
+}
+
+.btn-logout {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+}
+
+:root[data-theme="dark"] .btn-logout {
+  background: #3a3a3a !important;
+  color: #c0c0c0 !important;
+}
+
+/* Edit and Delete buttons in transactions */
+:root[data-theme="dark"] .btn-edit,
+:root[data-theme="dark"] .btn-delete {
+  background: var(--bg-tertiary) !important;
+  border: 1px solid #505050 !important;
+}
+
+:root[data-theme="dark"] .btn-edit:hover {
+  background: #4a4a4a !important;
+}
+
+:root[data-theme="dark"] .btn-delete:hover {
+  background: #4a4a4a !important;
+}
+
+/* Confirm Dialog */
+.confirm-dialog {
+  background: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+}
+
+.confirm-overlay {
+  background-color: rgba(0, 0, 0, 0.7) !important;
+}
+
+.confirm-title {
+  color: var(--text-primary) !important;
+}
+
+.confirm-message {
+  color: var(--text-secondary) !important;
+}
+
+.btn-cancel {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+}
+
+:root[data-theme="dark"] .btn-cancel {
+  background: #3a3a3a !important;
+  color: #c0c0c0 !important;
+}
+
+:root[data-theme="dark"] .btn-cancel:hover {
+  background: #4a4a4a !important;
+}
+
+/* Primary buttons - keep gradient visible */
+:root[data-theme="dark"] .btn-primary {
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3) !important;
+}
+
+/* Stats header */
+.settings-header.collapsible:hover {
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* Budget summary */
+.total-stat {
+  color: white !important;
+}
+
+/* Budget edit button - better visibility */
+:root[data-theme="dark"] .btn-edit-budget {
+  background: var(--bg-tertiary) !important;
+  color: #8b9df8 !important;
+  border: 1px solid #505050 !important;
+}
+
+/* Budget input group */
+:root[data-theme="dark"] .input-group {
+  background: var(--bg-tertiary) !important;
+  border-color: #505050 !important;
+}
+
+:root[data-theme="dark"] .input-group input {
+  background: transparent !important;
+  color: #ffffff !important;
+}
+
+:root[data-theme="dark"] .input-group .currency {
+  color: #8b9df8 !important;
+}
+
+/* Budget action buttons */
+:root[data-theme="dark"] .budget-actions button {
+  border-color: #505050 !important;
+}
+
+:root[data-theme="dark"] .btn-cancel-budget {
+  background: var(--bg-tertiary) !important;
+  color: #c0c0c0 !important;
+}
+
+/* Filter buttons */
+.time-filter {
+  background: var(--bg-tertiary) !important;
+}
+
+.time-filter button {
+  color: var(--text-secondary) !important;
+}
+
+:root[data-theme="dark"] .time-filter button {
+  color: #c0c0c0 !important;
+}
+
+.time-filter button:hover {
+  background: var(--bg-primary) !important;
+}
+
+.transaction-filters {
+  background: var(--bg-tertiary) !important;
+}
+
+.transaction-filters button {
+  color: var(--text-secondary) !important;
+}
+
+:root[data-theme="dark"] .transaction-filters button {
+  color: #c0c0c0 !important;
+}
+
+.transaction-filters button:hover {
+  background: var(--bg-primary) !important;
+}
+
+/* Type buttons */
+.type-btn {
+  background: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-secondary) !important;
+}
+
+:root[data-theme="dark"] .type-btn {
+  color: #c0c0c0 !important;
+  border-color: #505050 !important;
+}
+
+.type-filter-btn {
+  background: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-secondary) !important;
+}
+
+:root[data-theme="dark"] .type-filter-btn {
+  color: #c0c0c0 !important;
+  border-color: #505050 !important;
+}
+
+/* Notification note */
+.notification-note {
+  background: rgba(243, 156, 18, 0.1) !important;
+  border-left-color: #f39c12 !important;
+}
+
+.notification-note p {
+  color: var(--text-secondary) !important;
+}
+
+/* Login page */
+.login-container {
+  background: var(--bg-primary) !important;
+}
+
+.login-card {
+  background: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+}
+
+.login-subtitle {
+  color: var(--text-secondary) !important;
+}
+
+/* Smooth transitions */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease !important;
+}
